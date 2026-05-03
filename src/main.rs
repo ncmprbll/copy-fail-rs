@@ -240,4 +240,14 @@ fn main() {
                 TryInto::<&[u8; 4]>::try_into(chunk).unwrap(),
             );
         });
+
+    if let -1 = unsafe {
+        libc::execve(
+            std::ffi::CString::new(TARGET_BINARY).unwrap().as_ptr(),
+            std::ptr::null(),
+            std::ptr::null(),
+        )
+    } {
+        eprintln!("bad execve: {}", strerror(errno()))
+    }
 }
